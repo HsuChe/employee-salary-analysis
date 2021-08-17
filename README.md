@@ -234,7 +234,7 @@ We are to graph the database to isolate the reasons we belive that the database 
 
   ```
 
-  ![Histogram Image](https://github.com/HsuChe/sql-challenge/blob/e6bd0ab02e69d7a78718266d43937b51b4436bc2/images/common_salary.png)
+  ![Histogram Image](https://github.com/HsuChe/sql-challenge/blob/eec577dcf39548cf0fbe90ef290ad6700f4c80d8/images/common_salary.jpg)
 
   3. We cna also graph the median salary of the variious job titles.
 
@@ -249,7 +249,7 @@ We are to graph the database to isolate the reasons we belive that the database 
 
   ```
 
-  ![Bargraph Image](https://github.com/HsuChe/sql-challenge/blob/e6bd0ab02e69d7a78718266d43937b51b4436bc2/images/med_title_name.png)
+  ![Bargraph Image](https://github.com/HsuChe/sql-challenge/blob/eec577dcf39548cf0fbe90ef290ad6700f4c80d8/images/med_title_name.jpg)
 
   ## CONCLUSION
 
