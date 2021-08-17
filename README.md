@@ -47,7 +47,7 @@ Features of the database:
 
 First step is to generate the EDR table for the database. This will define the relationships between all the tables and formulate the primary keys as well as all the foreign keys.
 
-![EDR Image](https://github.com/HsuChe/sql-challenge/blob/066cf19bf3c139bb6051b43ccaf67d9ed1b1f578/images/hero_image.jpg)
+![EDR Image](https://github.com/HsuChe/sql-challenge/blob/e6bd0ab02e69d7a78718266d43937b51b4436bc2/EDR.png)
 
 We can begin creating tables and getting it ready for import and export. First we create the tables with the correct column names and data types. 
 
@@ -234,6 +234,8 @@ We are to graph the database to isolate the reasons we belive that the database 
 
   ```
 
+  ![Histogram Image](https://github.com/HsuChe/sql-challenge/blob/e6bd0ab02e69d7a78718266d43937b51b4436bc2/images/common_salary.png)
+
   3. We cna also graph the median salary of the variious job titles.
 
   ```sh
@@ -246,6 +248,8 @@ We are to graph the database to isolate the reasons we belive that the database 
     plt.savefig('med_title_name.png')
 
   ```
+
+  ![Bargraph Image](https://github.com/HsuChe/sql-challenge/blob/e6bd0ab02e69d7a78718266d43937b51b4436bc2/images/med_title_name.png)
 
   ## CONCLUSION
 
