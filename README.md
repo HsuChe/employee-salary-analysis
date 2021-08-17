@@ -1,5 +1,6 @@
 <h3 align="center">Employee Salary SQL Challenge</h3>
 
+
 <p align="center">
      Using SQL and python to pass a interview.
     <br />
@@ -9,67 +10,116 @@
   </p>
 </p>
 
+
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
 ![hero image](https://github.com/HsuChe/sql-challenge/blob/066cf19bf3c139bb6051b43ccaf67d9ed1b1f578/images/hero_image.jpg)
 
-We are going to prove the correlation between the distance from the equator and the rising max temperature. To do this, we will need to create a dataset through API.
+We will be building the database for an company while quering information regarding their employees, deparments, salaries and job titles.
 
-Features of the dataset:
+All the information is separated onto several different databases and the primary keys are linked together with many to many databases.
 
-* The Dataset will need the following for the proof.
+Features of the database:
 
-  * city: **The name of the city**
-  * Lat: **Latitude of the city**
-  * Lng: **Longitude of the city**
-  * Max Temp: **The maximum temperature of the city**
-  * Humidity: **Humidity level of the city on the date API was called**
-  * Cloudiness: **The cloudiness of the city the date API was called**
-  * Wind Speed: **Speed of the wind the date API was called**
-  * Date: **The date the API was called**
+* There are three tables with dedicated primary keys for them.
+
+  * **The departments table**
+    * Table has department labels
+  * **The titles table.**
+    * Table has all the staff title labels.
+  * **The employees table**
+    * birth_date: birthday of the employee.
+    * first_name: first name of the employee
+    * last_name: last name of the employee
+    * sex: gender of the employee
+    * hire_date: the date that the employee was hired
 * The dataset is in the csv file format with delimiter of comma.
-* Download Dataset click [HERE](https://github.com/HsuChe/pandas-challenge/blob/0f628f032da5f551f4000b80c5b4ccd4dd77c3ab/HeroesOfPymoli/Resources/purchase_data.csv)
+* Download the department csv click [HERE](https://github.com/HsuChe/sql-challenge/blob/f792740e3d3fe30d899a38788f8179959f835b81/data/departments.csv)
+* Download the dept_emp csv click [HERE](https://github.com/HsuChe/sql-challenge/blob/f792740e3d3fe30d899a38788f8179959f835b81/data/dept_emp.csv)
+* Download the dept_manager csv click [HERE](https://github.com/HsuChe/sql-challenge/blob/f792740e3d3fe30d899a38788f8179959f835b81/data/dept_manager.csv)
+* Download the employees csv click [HERE](https://github.com/HsuChe/sql-challenge/blob/f792740e3d3fe30d899a38788f8179959f835b81/data/employees.csv)
+* Download the salaries csv click [HERE](https://github.com/HsuChe/sql-challenge/blob/f792740e3d3fe30d899a38788f8179959f835b81/data/salaries.csv)
+* Download the titles csv click [HERE](https://github.com/HsuChe/sql-challenge/blob/f792740e3d3fe30d899a38788f8179959f835b81/data/titles.csv)
 
-## Generating the cities
+## Importing the database to PostgresSQL
 
-We first need to generate a list of cities to be processed
+First step is to generate the EDR table for the database. This will define the relationships between all the tables and formulate the primary keys as well as all the foreign keys.
 
-* create list of random coordinates given a range.
+![EDR Image](https://github.com/HsuChe/sql-challenge/blob/066cf19bf3c139bb6051b43ccaf67d9ed1b1f578/images/hero_image.jpg)
 
-  ```sh
-  city_df = pd.DataFrame()
-  city_df['city'] = ''
+We can begin creating tables and getting it ready for import and export. First we create the tables with the correct column names and data types. 
 
-  lat_range = np.random.uniform(low=-90.000, high=90.000, size=1500)
-  long_range = np.random.uniform(low=-180.000, high=180.000, size=1500)
-  ```
+```sh
+-- Create the Table Columns
+-- first table departments
+CREATE TABLE departments(
+	dept_no VARCHAR NOT NULL,
+	dept_name VARCHAR NOT NULL);
 
-We then generate a dataframe with the name of the city.
+```
 
-* create list of random coordinates given a range.
+Next we will copy the dedicated csv from our directories.
 
-  ```sh
-  for index in range(len(lat_range)):
-      city_df.loc[index, 'city'] = citipy.nearest_city(lat_range[index],long_range[index]).city_name
+```sh
+-- Copy row information from the csv
+COPY departments (dept_no,dept_name)
+-- Can use any directory with access permission
+FROM 'C:\Users\Public\Documents\data\departments.csv'
+DELIMITER ','
+CSV HEADER;
+```
 
-  city_df = city_df.drop_duplicates('city',keep='last').reset_index(drop=True)
+After all the tables are formed, we can add the relationships to the tables, specifically the primary keys. We have three tables with primary keys: The departments table, employees table, and the titles table.
 
-  city_df['Lat'] = 'NaN'
-  city_df['Lng'] = 'NaN'
-  city_df['Max Temp']	= 'NaN'
-  city_df['Humidity']	= 'NaN'
-  city_df['Cloudiness'] = 'NaN'
-  city_df['Wind Speed']= 'NaN'
-  city_df['Date']= 'NaN'
+```sh
+ALTER TABLE departments
+ADD PRIMARY KEY (dept_no);
 
-  city_df
-  ```
+ALTER TABLE employees
+ADD PRIMARY KEY (emp_no)
+ADD CONSTRAINT foreign_key
+FOREIGN KEY (emp_title_id) 
+REFERENCES titles (title_id);
 
-### Performing the API calls
+ALTER TABLE titles
+ADD PRIMARY KEY (title_id);
+```
 
-After generating the list of cities, generate the remaining needed data through API calls.
+After we will be setting the foreign keys for the rest of the tables.
+
+```sh
+ALTER TABLE dept_emp
+ADD CONSTRAINT foreign_key
+FOREIGN KEY (emp_no)
+REFERENCES employees (emp_no);
+
+ALTER TABLE dept_emp
+ADD CONSTRAINT foreign_key
+FOREIGN KEY (dept_no)
+REFERENCES departments (dept_no);
+
+ALTER TABLE dept_manager
+ADD CONSTRAINT foreign_key
+FOREIGN KEY(dept_no)
+REFERENCES departments (dept_no);
+
+ALTER TABLE dept_manager
+ADD CONSTRAINT foreign_key
+FOREIGN KEY (emp_no)
+REFERENCES employees (emp_no);
+
+ALTER TABLE salaries
+ADD CONSTRAINT foreign_key
+FOREIGN KEY (emp_no)
+REFERENCES employees (emp_no);
+
+```
+
+### Analysis through query
+
+After setting up the database, we can go ahead and .
 
 * finding the total unique players in the dataset.
 
@@ -83,7 +133,7 @@ After generating the list of cities, generate the remaining needed data through 
       return query_url
   ```
 
-Then we can generate the columns for the city DataFrame and use a for loop for the API calls. 
+Then we can generate the columns for the city DataFrame and use a for loop for the API calls.
 
 * a function to populate rows in the DataFrame
 
@@ -139,7 +189,7 @@ After we generate the city DataFrame, we can now plot data to prove the relation
   plt.title('WInd Speed vs Latitude')
   ```
 
-Next we can generate Linear Regressions for the Dataset as well. 
+Next we can generate Linear Regressions for the Dataset as well.
 
 * using scipy.stat, we can calculate the linear regression.
   ```sh
@@ -179,7 +229,7 @@ Next we will input all the calculations into a summary table.
 
 ### Analyze vacation information
 
-We can use the Dataset that was generated in the weather data to draw maps and find hotels. 
+We can use the Dataset that was generated in the weather data to draw maps and find hotels.
 
 * Get the Dataset for import
   ```sh
@@ -209,7 +259,7 @@ Next, generate the heatmap with the Dataset.
   fig
   ```
 
-Next, lets narrow the Dataset down with specific parameters that we are looking for on our vacation. 
+Next, lets narrow the Dataset down with specific parameters that we are looking for on our vacation.
 
 * reduce the range of cities with these parameters
   ```sh
@@ -226,7 +276,7 @@ Next, lets narrow the Dataset down with specific parameters that we are looking 
 
 ### Find the hotels
 
-Generate a new DataFrame for the hotels. 
+Generate a new DataFrame for the hotels.
 
 * We will be using city, country, lat, lng, and hotel name in the API call.
   ```sh
@@ -265,7 +315,7 @@ Generate a new DataFrame for the hotels.
 
 This will give us a DataFrame with the names of all the hotels near the cities that matches the criterias we want. Lastly, we generate the name markers of our hotels on the city locations in google maps.
 
-* create the markers for google maps. 
+* create the markers for google maps.
   ```sh
   # Add marker layer ontop of heat map
   markers = gmaps.marker_layer(locations, info_box_content = hotel_info)
